@@ -59,8 +59,11 @@ namespace PerfTest.ConsoleApp
 
             // the code that you want to measure comes here
             var couchbaseLib = new GenerateDataCouch();
-            var list = couchbaseLib.GetEventsByDate();
+            int total = 0;
+            var list = couchbaseLib.GetEventsByDate(out total);
+            //var list = couchbaseLib.GetEvents();
 
+            Console.WriteLine($"total: {total}");
             Console.WriteLine($"list.Count: {list.Count}");
 
             watch.Stop();
@@ -97,22 +100,22 @@ namespace PerfTest.ConsoleApp
             //Console.WriteLine($"elapsedSeconds:{elapsedSeconds}");
 
 
-            Console.WriteLine("START - Elasticsearch");
+            //Console.WriteLine("START - Elasticsearch");
 
-            watch = Stopwatch.StartNew();
+            //watch = Stopwatch.StartNew();
 
-            // the code that you want to measure comes here
-            var elasticLib = new GenerateDataElastic();
-            elasticLib.BulkInsert();
+            //// the code that you want to measure comes here
+            //var elasticLib = new GenerateDataElastic();
+            //elasticLib.BulkInsert();
 
-            watch.Stop();
-            elapsedMs = watch.ElapsedMilliseconds;
-            elapsedSeconds = watch.Elapsed.TotalSeconds;
+            //watch.Stop();
+            //elapsedMs = watch.ElapsedMilliseconds;
+            //elapsedSeconds = watch.Elapsed.TotalSeconds;
 
 
-            Console.WriteLine("elasticLib.BulkInsert() took:");
-            Console.WriteLine($"elapsedMs:{elapsedMs}");
-            Console.WriteLine($"elapsedSeconds:{elapsedSeconds}");
+            //Console.WriteLine("elasticLib.BulkInsert() took:");
+            //Console.WriteLine($"elapsedMs:{elapsedMs}");
+            //Console.WriteLine($"elapsedSeconds:{elapsedSeconds}");
 
 
 

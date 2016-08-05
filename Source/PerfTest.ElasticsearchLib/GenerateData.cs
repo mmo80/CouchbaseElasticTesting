@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PerfTest.ElasticsearchLib.Model;
 
 namespace PerfTest.ElasticsearchLib
 {
     public class GenerateData
     {
-        private ActivityEventRepository _repo;
+        private readonly ActivityEventRepository _repo;
 
         public GenerateData()
         {

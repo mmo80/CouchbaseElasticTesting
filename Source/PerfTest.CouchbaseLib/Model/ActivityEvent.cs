@@ -8,8 +8,8 @@ namespace PerfTest.CouchbaseLib.Model
         { }
 
         public string EventName { get; set; }
-        public DateTimeOffset StartDate { get; set; }
-        public DateTimeOffset EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public string Description { get; set; }
         public string Location { get; set; }
         public string Organizer { get; set; }

@@ -38,8 +38,6 @@ namespace PerfTest.ElasticsearchLib
 
         public ActivityEventResult FindByDateRange(DateTime startDate, DateTime endDate, int startIndex, int take)
         {
-
-            // url: https://www.elastic.co/guide/en/elasticsearch/client/net-api/current/date-range-query-usage.html
             var result = _elasticSearch.Search<ActivityEvent>(s => s
                 .From(startIndex)
                 .Take(take)

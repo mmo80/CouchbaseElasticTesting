@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Castle.Components.DictionaryAdapter;
 using Couchbase;
+using Couchbase.Configuration.Client;
 using Couchbase.Core;
+using Couchbase.Linq;
 using PerfTest.CouchbaseLib.Model;
 
 namespace PerfTest.CouchbaseLib
@@ -59,36 +63,42 @@ namespace PerfTest.CouchbaseLib
         }
 
 
-
-        // Check out
-        // url: http://blog.couchbase.com/2016/may/couchbase-with-windows-.net-part-4-linq2couchbase
-        // url: https://github.com/couchbaselabs/Linq2Couchbase
-		// url: http://blog.couchbase.com/facet/Topic/.NET
-        public List<ActivityEvent> GetEventsByDate()
+        public List<ActivityEvent> GetEventsByDate(out int total)
         {
-            using (IBucket bucket = _cluster.OpenBucket(CouchbaseConfiguration.BUCKETNAME))
+            ClusterHelper.Initialize(new ClientConfiguration
             {
-                // url: http://developer.couchbase.com/documentation/server/current/n1ql/n1ql-language-reference/createprimaryindex.html
-                // url: http://developer.couchbase.com/documentation/server/current/n1ql/n1ql-language-reference/datefun.html
+                Servers = new List<Uri> { new Uri("http://localhost:8091/") }
+            });
 
+            using (IBucket bucket = ClusterHelper.GetBucket(CouchbaseConfiguration.BUCKETNAME))
+            {
+                var date = new DateTime(2016, 1, 1);
+
+                var context = new BucketContext(bucket);
+
+                //var context = new BucketContext(bucket);
+                var query = (from e in context.Query<ActivityEvent>()
+                             where e.StartDate >= date
+                             select e)
+                             //.Skip(0)
+                             .Take(500)
+                             ;
+
+                //total = query.Count();
+                total = 0;
+                //total = query.Count();
                 //string queryIndex = "CREATE PRIMARY INDEX `perf-test-bucket-primary-index` ON `perf-test-bucket` USING GSI;";
-                // &startkey=[2013,4,16]&endkey=[2013,4,24]
-                string query = $"SELECT r.eventName, r.startDate, r.id, r.`key`, r.endDate, r.type, r.version FROM `{CouchbaseConfiguration.BUCKETNAME}` r " +
-                               $"WHERE r.type = 'event' AND r.startDate > '2016-01-01' LIMIT 500";
-                // $"r WHERE r.type = 'event' AND r.startDate < '2015-01-01'";
-                // WHERE r.type = 'event'
-                // STR_TO_MILLIS("2014-02-01")
-                /*
-                 # paging
-                    SELECT fname, age 
-                    FROM tutorial
-                        WHERE age > 30
-                    LIMIT 2
-                    OFFSET 2
-                 */
-                var result = bucket.Query<ActivityEvent>(query);
-                return result.Rows;
+                //var result = bucket.Query<ActivityEvent>(query);
+
+                //var count = query.Count();
+                var list = query.ToList();
+
+                return list;
             }
+
+
+
+
         }
     }
 }

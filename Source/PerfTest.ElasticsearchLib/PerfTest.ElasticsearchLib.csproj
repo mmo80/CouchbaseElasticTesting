@@ -55,6 +55,7 @@
     <Compile Include="ActivityEventRepository.cs" />
     <Compile Include="Elasticsearch.cs" />
     <Compile Include="GenerateData.cs" />
+    <Compile Include="IElasticsearch.cs" />
     <Compile Include="Model\ActivityEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -18,7 +18,7 @@ elapsedSeconds:5.9860968
 
 
 
-5 000 000 rader
+5 000 000 rows
 
 START
 Couchbase

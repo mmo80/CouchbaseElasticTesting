@@ -1,0 +1,63 @@
+elasticsearch BulkInsert() took:
+elapsedMs:11032
+elapsedSeconds:11.0323322
+
+de gånger 50 = 550 sekunder = ~9 min
+
+
+
+couchbaseLib.BulkInsert() took:
+elapsedMs:7537
+elapsedSeconds:7.5371258
+
+couchbaseLib.BulkInsert() took:
+elapsedMs:5986
+elapsedSeconds:5.9860968
+
+
+
+
+
+5 000 000 rader
+
+START
+Couchbase
+couchbaseLib.BulkInsert() took:
+elapsedMs:283863
+elapsedSeconds:283.8633913
+
+~5 min
+
+
+START
+Elasticsearch
+elasticLib.BulkInsert() took:
+elapsedMs:375490
+elapsedSeconds:375.4903456
+
+~6 min
+
+
+
+
+Query date range 2016-01-01 - 2017-01-01
+START - Elasticsearch
+list.Count: 455777 (show first 500 rows [0, 500])
+elasticLib.GetEventsByDate() took:
+elapsedMs:667
+elapsedSeconds:0.6677176
+
+
+Query startdate after 2016-01-01
+START - Couchbase
+list.Count: 107930
+couchbaseLib.GetEventsByDate() took:
+elapsedMs:109187
+elapsedSeconds:109.1873275
+
+
+START - Couchbase
+list.Count: 500 (LIMIT 500, how to get total count?)
+couchbaseLib.GetEventsByDate() took:
+elapsedMs:841
+elapsedSeconds:0.8416186

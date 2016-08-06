@@ -33,12 +33,12 @@ namespace PerfTest.CouchbaseLib
         {
             using (IBucket bucket = _cluster.OpenBucket(CouchbaseConfiguration.BUCKETNAME))
             {
-                var batchCount = 5000;
+                var batchCount = 50000;
                 for (int x = 0; x < batchCount; x++)
                 {
                     var items = new Dictionary<string, ActivityEvent>();
 
-                    for (int i = 1; i <= 1000; i++)
+                    for (int i = 1; i <= 100; i++)
                     {
                         var date = GenerateDate();
 
@@ -54,11 +54,27 @@ namespace PerfTest.CouchbaseLib
                     }
 
                     var multiUpsert = bucket.Upsert(items);
-                    //foreach (var item in multiUpsert)
-                    //{
-                    //    Assert.IsTrue(item.Value.Success);
-                    //}
+                    ReTry(multiUpsert, bucket);
                 }
+            }
+        }
+
+
+        private void ReTry(IDictionary<string, IOperationResult<ActivityEvent>> multiUpsert, IBucket bucket)
+        {
+            var unsuccessfulItems = new Dictionary<string, ActivityEvent>();
+            foreach (var item in multiUpsert)
+            {
+                if (!item.Value.Success)
+                {
+                    Console.WriteLine($"Unsuccessful: {item.Key}");
+                    unsuccessfulItems.Add(item.Key, item.Value.Value);
+                }
+            }
+            if (unsuccessfulItems.Any())
+            {
+                var multiUpsertList = bucket.Upsert(unsuccessfulItems);
+                ReTry(multiUpsertList, bucket);
             }
         }
 
@@ -76,29 +92,20 @@ namespace PerfTest.CouchbaseLib
 
                 var context = new BucketContext(bucket);
 
-                //var context = new BucketContext(bucket);
                 var query = (from e in context.Query<ActivityEvent>()
                              where e.StartDate >= date
-                             select e)
-                             //.Skip(0)
-                             .Take(500)
-                             ;
+                             select e);
 
+                // Can't do Count here? Get error.
                 //total = query.Count();
                 total = 0;
-                //total = query.Count();
                 //string queryIndex = "CREATE PRIMARY INDEX `perf-test-bucket-primary-index` ON `perf-test-bucket` USING GSI;";
                 //var result = bucket.Query<ActivityEvent>(query);
 
-                //var count = query.Count();
-                var list = query.ToList();
+                var list = query.Take(500).ToList();
 
                 return list;
             }
-
-
-
-
         }
     }
 }

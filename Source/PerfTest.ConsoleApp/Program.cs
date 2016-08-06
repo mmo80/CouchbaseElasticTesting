@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PerfTest.CouchbaseLib;
-using PerfTest.ElasticsearchLib;
 using GenerateDataCouch = PerfTest.CouchbaseLib.GenerateData;
 using GenerateDataElastic = PerfTest.ElasticsearchLib.GenerateData;
 
@@ -16,18 +10,17 @@ namespace PerfTest.ConsoleApp
         static void Main(string[] args)
         {
             PerfTestQueries();
-            //BulkInsertData();
+            //BulkInsert();
+
+            Console.ReadLine();
         }
 
 
         private static void PerfTestQueries()
         {
             CouchbaseTests();
-            //ElasticsearchTests();
-
-            Console.ReadLine();
+            ElasticsearchTests();
         }
-
 
         private static void ElasticsearchTests()
         {
@@ -35,21 +28,17 @@ namespace PerfTest.ConsoleApp
 
             Stopwatch watch = Stopwatch.StartNew();
 
-            // the code that you want to measure comes here
             var elasticLib = new GenerateDataElastic();
             var result = elasticLib.GetEventsByDate();
 
+            watch.Stop();
+
             Console.WriteLine($"list.Count: {result.TotalHits}");
 
-            watch.Stop();
-            long elapsedMs = watch.ElapsedMilliseconds;
-            double elapsedSeconds = watch.Elapsed.TotalSeconds;
-
             Console.WriteLine("elasticLib.GetEventsByDate() took:");
-            Console.WriteLine($"elapsedMs:{elapsedMs}");
-            Console.WriteLine($"elapsedSeconds:{elapsedSeconds}");
+            Console.WriteLine($"elapsedMs:{watch.ElapsedMilliseconds}");
+            Console.WriteLine($"elapsedSeconds:{watch.Elapsed.TotalSeconds}");
         }
-
 
         private static void CouchbaseTests()
         {
@@ -57,70 +46,54 @@ namespace PerfTest.ConsoleApp
 
             Stopwatch watch = Stopwatch.StartNew();
 
-            // the code that you want to measure comes here
             var couchbaseLib = new GenerateDataCouch();
-            int total = 0;
+            int total;
             var list = couchbaseLib.GetEventsByDate(out total);
-            //var list = couchbaseLib.GetEvents();
 
             Console.WriteLine($"total: {total}");
             Console.WriteLine($"list.Count: {list.Count}");
 
             watch.Stop();
-            long elapsedMs = watch.ElapsedMilliseconds;
-            double elapsedSeconds = watch.Elapsed.TotalSeconds;
 
             Console.WriteLine("couchbaseLib.GetEventsByDate() took:");
-            Console.WriteLine($"elapsedMs:{elapsedMs}");
-            Console.WriteLine($"elapsedSeconds:{elapsedSeconds}");
+            Console.WriteLine($"elapsedMs:{watch.ElapsedMilliseconds}");
+            Console.WriteLine($"elapsedSeconds:{watch.Elapsed.TotalSeconds}");
         }
 
-
-        private static void BulkInsertData()
+        private static void BulkInsert()
         {
-            Stopwatch watch;
-            long elapsedMs;
-            double elapsedSeconds;
+            BulkInsertCouchbase();
+            BulkInsertElasticsearch();
+        }
 
-            //Console.WriteLine("START - Couchbase");
+        private static void BulkInsertElasticsearch()
+        {
+            Console.WriteLine("START - Elasticsearch");
+            var watch = Stopwatch.StartNew();
 
-            //watch = Stopwatch.StartNew();
+            var elasticLib = new GenerateDataElastic();
+            elasticLib.BulkInsert();
 
-            //// the code that you want to measure comes here
-            //var couchbaseLib = new GenerateDataCouch();
-            //couchbaseLib.BulkInsert();
+            watch.Stop();
 
-            //watch.Stop();
-            //elapsedMs = watch.ElapsedMilliseconds;
-            //elapsedSeconds = watch.Elapsed.TotalSeconds;
+            Console.WriteLine("elasticLib.BulkInsert() took:");
+            Console.WriteLine($"elapsedMs:{watch.ElapsedMilliseconds}");
+            Console.WriteLine($"elapsedSeconds:{watch.Elapsed.TotalSeconds}");
+        }
 
+        private static void BulkInsertCouchbase()
+        {
+            Console.WriteLine("START - Couchbase");
+            var watch = Stopwatch.StartNew();
 
-            //Console.WriteLine("couchbaseLib.BulkInsert() took:");
-            //Console.WriteLine($"elapsedMs:{elapsedMs}");
-            //Console.WriteLine($"elapsedSeconds:{elapsedSeconds}");
+            var couchbaseLib = new GenerateDataCouch();
+            couchbaseLib.BulkInsert();
 
+            watch.Stop();
 
-            //Console.WriteLine("START - Elasticsearch");
-
-            //watch = Stopwatch.StartNew();
-
-            //// the code that you want to measure comes here
-            //var elasticLib = new GenerateDataElastic();
-            //elasticLib.BulkInsert();
-
-            //watch.Stop();
-            //elapsedMs = watch.ElapsedMilliseconds;
-            //elapsedSeconds = watch.Elapsed.TotalSeconds;
-
-
-            //Console.WriteLine("elasticLib.BulkInsert() took:");
-            //Console.WriteLine($"elapsedMs:{elapsedMs}");
-            //Console.WriteLine($"elapsedSeconds:{elapsedSeconds}");
-
-
-
-
-            Console.ReadLine();
+            Console.WriteLine("couchbaseLib.BulkInsert() took:");
+            Console.WriteLine($"elapsedMs:{watch.ElapsedMilliseconds}");
+            Console.WriteLine($"elapsedSeconds:{watch.Elapsed.TotalSeconds}");
         }
     }
 }

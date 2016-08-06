@@ -31,7 +31,7 @@ namespace PerfTest.ElasticsearchLib
             var response = _elasticSearch.Bulk(operations);
         }
 
-        public ActivityEvent FindCustomerByCustomerId(string id)
+        public ActivityEvent FindById(string id)
         {
             return _elasticSearch.GetById<ActivityEvent>(id);
         }

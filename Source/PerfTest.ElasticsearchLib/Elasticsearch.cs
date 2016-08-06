@@ -10,8 +10,7 @@ namespace PerfTest.ElasticsearchLib
         private const string DefaultIndex = "events-search";
 
         public Elasticsearch()
-        {
-        }
+        { }
 
         public T GetById<T>(string id) where T : class
         {

@@ -7,10 +7,9 @@ namespace PerfTest.ElasticsearchLib
 {
     public class Elasticsearch : IElasticsearch
     {
-        private const string DefaultIndex = "events-search";
+        private const string DefaultIndex = "events-test";
+        private const string ElasticsearchUrl = "http://localhost:9200";
 
-        public Elasticsearch()
-        { }
 
         public T GetById<T>(string id) where T : class
         {
@@ -43,9 +42,7 @@ namespace PerfTest.ElasticsearchLib
 
         private ElasticClient GetClient()
         {
-            var elasticsearchUrl = "http://localhost:9200";
-
-            var node = new Uri(elasticsearchUrl);
+            var node = new Uri(ElasticsearchUrl);
             var settings = new ConnectionSettings(node)
                 .DefaultIndex(DefaultIndex)
                 ;
